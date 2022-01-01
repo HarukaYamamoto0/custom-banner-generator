@@ -4,7 +4,7 @@ const { Router } = require("express");
 const router = Router();
 
 router.get("/home", async (req, res) => {
-  const banners = await fs.readdirSync(path.resolve(__dirname, ".././banners"));
+  const banners = fs.readdirSync(path.resolve(__dirname, ".././banners"));
   res.send(`<p>currently a total of ${banners.length} themes</p>`);
 });
 

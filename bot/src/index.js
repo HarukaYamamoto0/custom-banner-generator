@@ -4,8 +4,7 @@ require("dotenv").config();
 async function start() {
   try {
     const client = new Client({ intents: 2047 });
-
-    client.once("ready", () => console.log("I'm online"));
+    await require("./client/fileLoader.js").loadAll(client);
 
     await client.login(process.env.tokenBot);
     console.log("[INDEX] - index loaded successfully");

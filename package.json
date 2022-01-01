@@ -2,7 +2,9 @@
   "name": "custom-banner-generator",
   "description": "a custom banner generator",
   "scripts": {
-    "start": "node ./bot/src/index.js"
+    "start": "npm run bot && npm run server",
+    "bot": "node ./bot/src/index.js",
+    "server": "node ./api/src/server.js"
   },
   "dependencies": {
     "express": "^4.17.2",

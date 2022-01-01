@@ -2,7 +2,7 @@
   "name": "custom-banner-generator",
   "description": "a custom banner generator",
   "scripts": {
-    "start": "npm run bot && npm run server",
+    "start": "npm run bot & npm run server",
     "bot": "node ./bot/src/index.js",
     "server": "node ./api/src/server.js"
   },
@@ -14,7 +14,8 @@
     "dotenv": "^10.0.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "discord-api-types": "^0.26.0",
-    "@discordjs/builders": "^0.11.0"
+    "@discordjs/builders": "^0.11.0",
+    "mongoose": "^5.13.4"
   },
   "engines": {
     "node": "16.12.0"

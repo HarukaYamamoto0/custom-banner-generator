@@ -1,24 +1,19 @@
 const { loadImage } = require("canvas");
+const User = require("../../database/Schemas/User.js");
 const Utils = require("../../utils/main.js");
 
 module.exports = async (req, res, userId) => {
   try {
-    const [ctx, canvas] = await Utils.createBase();
-    
-    // adding a gradient background
-    const grd = ctx.createLinearGradient(0, 0, 0, 170);
-    grd.addColorStop(0, "black");
-    grd.addColorStop(0.8, "grey");
-    grd.addColorStop(1, "white");
-    
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).send({ error: "User not found" });
+
+    const [ctx, canvas] = await Utils.createBase(user.theme1.banner);
 
     // texts
-    let tag = "Haruka 69#3832";
+    let tag = user.user.username;
     tag = Utils.shorten(tag, 17);
 
-    let about = "Text".repeat(90);
+    let about = user.theme1.about ?? user.user.about ?? "doing nothing";
     about = Utils.lineBreaker(about, 35, 70);
 
     // writing the user tag
@@ -31,15 +26,23 @@ module.exports = async (req, res, userId) => {
     ctx.fillStyle = "#ffffff";
     ctx.fillText(about, 90, 57);
 
+    let status;
+    switch (user.user.status) {
+      case "online": status = "#008000"; break;
+      case "dnd": status = "#e61919"; break;
+      case "offline": status = "#696969"; break;
+      case "idle": status = "#d7d350"; break;
+    }
+
     // drawing the avatar
     ctx.arc(47, 40, 35, 0, 2 * Math.PI, true);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#696969";
+    ctx.strokeStyle = status;
     ctx.stroke();
     ctx.closePath();
     ctx.clip();
 
-    const avatar = await loadImage("https://imgur.com/Bluj99p.png");
+    const avatar = await loadImage(user.user.avatar);
     ctx.drawImage(avatar, 10, 4, 79, 79);
 
     Utils.sendImage(res, canvas);

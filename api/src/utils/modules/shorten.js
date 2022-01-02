@@ -1,5 +1,5 @@
 module.exports = (text, size) => {
   if (typeof text !== "string") return "";
-  if (text.length > size) return text.substr(0, size) + "...";
-  return text;
+  else if (text.length > size) return text.slice(0, size) + "...";
+  else return text;
 };

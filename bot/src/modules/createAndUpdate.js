@@ -1,17 +1,14 @@
 const User = require("../database/Schemas/User.js");
-const Getter = require("./getter.js");
+const Getter = require("../utils/getter.js");
 
 module.exports = async options => {
-  const { user, author, guild } = options;
-  const channel = user ?? author;
-  const userId = user?.id ?? author?.id;
-
   try {
-    const userD = await User.findById(userId);
-    const getter = new Getter(user ?? author, guild);
+    const { user: author, guild } = options;
+    const user = await User.findById(author.id);
+    const getter = new Getter(author, guild);
 
     const databaseUser = {
-      _id: userId,
+      _id: author.id,
       user: {
         username: getter.tag,
         avatar: getter.avatar,
@@ -22,13 +19,13 @@ module.exports = async options => {
     };
 
     // create or update user
-    if (userD) {
-      if (getter.equals(userD)) {
+    if (user) {
+      if (getter.equals(user)) {
         // nothing
-      } else await User.findByIdAndUpdate(userId, databaseUser);
+      } else await User.findByIdAndUpdate(author.id, databaseUser);
     } else {
       await User.create(databaseUser);
-      return channel.send({
+      return author.send({
         content:
           "before you were not registered in my database, but now you are"
       });

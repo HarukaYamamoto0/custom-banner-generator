@@ -1,38 +1,37 @@
-const User = require("../../database/Schemas/User");
-const Getter = require("../../utils/getter");
+const { Collection } = require("discord.js");
+const createAndUpdate = require("../../modules/createAndUpdate.js");
 
 module.exports = async (client, interaction) => {
   if (!interaction.isCommand()) return;
 
   try {
-    const { user: author, guild, client, commandName } = interaction;
+    const { client: { cooldowns }, user, commandName } = interaction;
 
-    const user = await User.findById(author.id);
+    // cooldowns
+    const now = Date.now();
+    const time = 7 * 1000;
 
-    if (!user) {
-      const getter = new Getter(author, guild);
+    if (cooldowns.has(user.id)) {
+      const expiration = cooldowns.get(user.id) + time;
 
-      const databaseUser = {
-        _id: author.id,
-        user: {
-          username: getter.tag,
-          avatar: getter.avatar,
-          status: getter.status,
-          device: getter.device,
-          about: getter.about
-        }
-      };
-
-      await User.create(databaseUser);
-
-      return interaction.reply({
-        content:
-          "before you were not registered in my database, but now you are, try using the command again",
-        ephemeral: true
-      });
+      if (now < expiration) {
+        const timeLeft = (expiration - now) / 1000;
+        return interaction.reply({
+          content: `please wait ${parseInt(timeLeft)} seconds to use some command again`,
+          ephemeral: true
+        });
+      }
     }
 
+    cooldowns.set(user.id, now);
+    setTimeout(() => cooldowns.delete(user.id), time);
+
+    // create or update the user in the database
+    await createAndUpdate(interaction);
+
+    // execute the command
     const command = client.commands.get(commandName);
+
     if (!command)
       return interaction.reply({
         content: "this command is not currently available.",

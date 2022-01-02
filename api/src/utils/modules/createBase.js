@@ -11,7 +11,7 @@ module.exports = async banner => {
       ctx.drawImage(background, 0, 0, /*canvas.width, canvas.height*/);
     }
 
-    if (banner.startsWith("color")) {
+    if (banner.startsWith("hexa")) {
       ctx.fillStyle = banner.split(":")[1];
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }

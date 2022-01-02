@@ -5,26 +5,15 @@ const Utils = require("../../utils/main.js");
 module.exports = async (req, res, userId) => {
   try {
     const user = await User.findById(userId);
-    
-    if (!user)
-      return res.status(400).send({ error: "User not found" })
-    
+    if (!user) return res.status(400).send({ error: "User not found" });
+
     const [ctx, canvas] = await Utils.createBase(user.theme1.banner);
-    
-    // adding a gradient background
-    const grd = ctx.createLinearGradient(0, 0, 0, 170);
-    grd.addColorStop(0, "black");
-    grd.addColorStop(0.8, "grey");
-    grd.addColorStop(1, "white");
-    
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // texts
     let tag = user.user.username;
     tag = Utils.shorten(tag, 17);
 
-    let about = user.user.about ?? "";
+    let about = user.theme1.about ?? user.user.about ?? "doing nothing";
     about = Utils.lineBreaker(about, 35, 70);
 
     // writing the user tag
@@ -37,10 +26,18 @@ module.exports = async (req, res, userId) => {
     ctx.fillStyle = "#ffffff";
     ctx.fillText(about, 90, 57);
 
+    let status;
+    switch (user.user.status) {
+      case "online": status = "#008000"; break;
+      case "dnd": status = "#e61919"; break;
+      case "offline": status = "#696969"; break;
+      case "idle": status = "#d7d350"; break;
+    }
+
     // drawing the avatar
     ctx.arc(47, 40, 35, 0, 2 * Math.PI, true);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#696969";
+    ctx.strokeStyle = status;
     ctx.stroke();
     ctx.closePath();
     ctx.clip();

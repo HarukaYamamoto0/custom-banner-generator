@@ -1,9 +1,10 @@
-const { Client } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 require("dotenv").config();
 
 async function start() {
   try {
     const client = new Client({ intents: 2047 });
+    client.cooldowns = new Collection();
     
     await require("./database/index.js").start();
     await require("./client/fileLoader.js").loadAll(client);

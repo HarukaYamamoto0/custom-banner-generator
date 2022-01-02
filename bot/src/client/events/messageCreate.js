@@ -1,5 +1,4 @@
-const User = require("../../database/Schemas/User");
-const Getter = require("../../utils/getter");
+const createAndUpdate = require("../../utils/createAndUpdate.js");
 
 module.exports = async (client, message) => {
   const author = message.author;
@@ -11,31 +10,5 @@ module.exports = async (client, message) => {
   if (message.content === `<@${client.user.id}>`)
     return message.reply(`👋│Hello ${author} See my commands using /help.`);
 
-  try {
-    // database
-    const user = await User.findById(author.id);
-    const getter = new Getter(author, guild);
-
-    const databaseUser = {
-      _id: author.id,
-      user: {
-        username: getter.tag,
-        avatar: getter.avatar,
-        status: getter.status,
-        device: getter.device,
-        about: getter.about
-      }
-    };
-
-    // create or update user
-    if (user) {
-      if (getter.equals(user)) {
-        // nothing
-      } else await User.findByIdAndUpdate(author.id, databaseUser);
-    } else {
-      await User.create(databaseUser);
-    }
-  } catch (err) {
-    console.log(err);
-  }
+  await createAndUpdate(message);
 };

@@ -22,6 +22,8 @@ This project was inspired by the innovative features found on this [site](https:
 
 The Custom Banner Generator is a versatile tool that combines two distinct yet interconnected components: an API and a bot. These components are organized into two main directories within the project: "api" and "bot". While these two parts can function independently, they share a common configuration through the "package.json" and ".env" files. Though it is possible to use them together, it is generally recommended to use them separately to maintain simplicity and modularity.
 
+**In short, it just generates this little banner, nothing special.**
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributing
@@ -50,7 +52,7 @@ For any questions, suggestions or feedback, feel free to contact us:
 
 ## 📝 Licença
 
-This project is licensed under the MIT License. See the [LICENSE] file for more details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
